@@ -2,6 +2,7 @@ package brokerapi
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -55,7 +56,11 @@ func (b BrokerAPI) Provision(ctx context.Context, instanceID string, details dom
 		return domain.ProvisionedServiceSpec{}, APIResponseError(rctx, apiresponses.ErrAsyncRequired)
 	}
 
-	parameters := append(details.RawParameters, details.RawContext...)
+	parameters, err := paramMap(details.RawContext, details.RawParameters)
+	if err != nil {
+		return domain.ProvisionedServiceSpec{}, err
+	}
+
 	res, err := b.broker.Provision(rctx, instanceID, details.PlanID, parameters)
 	return res, APIResponseError(rctx, err)
 }
@@ -105,7 +110,7 @@ func (b BrokerAPI) Update(ctx context.Context, instanceID string, details domain
 	})
 	rctx.Logger.Info("update-service-instance")
 
-	parameters := append(details.RawParameters, details.RawContext...)
+	parameters, err := paramMap(details.RawParameters, details.RawContext)
 	res, err := b.broker.Update(rctx, instanceID, details.ServiceID, details.PreviousValues.PlanID, details.PlanID, parameters)
 	if err != nil {
 		switch err {
@@ -222,4 +227,14 @@ func APIResponseError(rctx *reqcontext.ReqContext, err error) error {
 		http.StatusInternalServerError,
 		"internal-server-error",
 	).Build()
+}
+
+func paramMap(messages ...json.RawMessage) (map[string]interface{}, error) {
+	var parameters map[string]interface{}
+	for _, message := range messages {
+		if err := json.Unmarshal(message, &parameters); err != nil {
+			return nil, err
+		}
+	}
+	return parameters, nil
 }

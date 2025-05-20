@@ -2,7 +2,6 @@ package crossplane
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 
 	"code.cloudfoundry.org/lager"
@@ -60,7 +59,7 @@ type ServiceBinder interface {
 type ProvisionValidater interface {
 	// ValidateProvisionParams can be used to check the params for validity. If valid, it should return all needed parameters
 	// for the composition.
-	ValidateProvisionParams(ctx context.Context, params json.RawMessage) (map[string]interface{}, error)
+	ValidateProvisionParams(ctx context.Context, params map[string]interface{}) (map[string]interface{}, error)
 }
 
 // ServiceBinderFactory reads the composite's labels service name and instantiates an appropriate ServiceBinder.

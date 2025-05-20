@@ -2,7 +2,6 @@ package crossplane
 
 import (
 	"context"
-	"encoding/json"
 
 	"code.cloudfoundry.org/lager"
 )
@@ -43,13 +42,8 @@ func (g GenericServiceBinder) GetBinding(ctx context.Context, bindingID string) 
 	panic("implement me")
 }
 
-func (g GenericServiceBinder) ValidateProvisionParams(ctx context.Context, params json.RawMessage) (map[string]interface{}, error) {
-	var dat map[string]interface{}
-	if err := json.Unmarshal(params, &dat); err != nil {
-		return nil, err
-	}
-
+func (g GenericServiceBinder) ValidateProvisionParams(ctx context.Context, params map[string]interface{}) (map[string]interface{}, error) {
 	// @fixme: How to map site-specific labels?
-	dat[ClusterLabel] = dat["subdomain"]
-	return dat, nil
+	params[ClusterLabel] = params["subdomain"]
+	return params, nil
 }
