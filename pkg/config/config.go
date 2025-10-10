@@ -15,21 +15,24 @@ import (
 
 // Config contains all configuration values.
 type Config struct {
-	Kubeconfig         string
-	ServiceIDs         []string
-	ListenAddr         string
-	Username           string
-	Password           string
-	UsernameClaim      string
-	JWKeyRegister      *jwt.KeyRegister
-	Namespace          string
-	ReadTimeout        time.Duration
-	WriteTimeout       time.Duration
-	MaxHeaderBytes     int
-	PlanUpdateSizeRule string
-	PlanUpdateSLARule  string
-	EnableMetrics      bool
-	MetricsDomain      string
+	Kubeconfig                 string
+	ServiceIDs                 []string
+	ListenAddr                 string
+	Username                   string
+	Password                   string
+	UsernameClaim              string
+	JWKeyRegister              *jwt.KeyRegister
+	Namespace                  string
+	ReadTimeout                time.Duration
+	WriteTimeout               time.Duration
+	MaxHeaderBytes             int
+	PlanUpdateSizeRule         string
+	PlanUpdateSLARule          string
+	EnableMetrics              bool
+	MetricsDomain              string
+	RedisServiceName           string
+	MariaDBServiceName         string
+	MariaDBDatabaseServiceName string
 }
 
 // GetEnv is an interface that allows to get variables from the environment
@@ -87,27 +90,40 @@ const (
 	// EnvMetricsDomain sets domain name for the metrics endpoints.
 	EnvMetricsDomain = "METRICS_DOMAIN"
 
-	defaultHTTPTimeout        = 3 * time.Minute
-	defaultHTTPMaxHeaderBytes = 1 << 20 // 1 MB
-	defaultHTTPListenAddr     = ":8080"
-	defaultUsernameClaim      = "sub"
-	defaultSLAUpdateRules     = "standard>premium|premium>standard"
-	defaultEnableMetrics      = false
+	// EnvRedisServiceName defines the service name for Redis
+	EnvRedisServiceName = "REDIS_SERVICE_NAME"
+	// EnvMariaDBServiceName defines the service name for MariaDB
+	EnvMariaDBServiceName = "MARIADB_SERVICE_NAME"
+	// EnvMariaDBDatabaseServiceName defines the service name for MariaDB Database
+	EnvMariaDBDatabaseServiceName = "MARIADB_DATABASE_SERVICE_NAME"
+
+	defaultHTTPTimeout                = 3 * time.Minute
+	defaultHTTPMaxHeaderBytes         = 1 << 20 // 1 MB
+	defaultHTTPListenAddr             = ":8080"
+	defaultUsernameClaim              = "sub"
+	defaultSLAUpdateRules             = "standard>premium|premium>standard"
+	defaultEnableMetrics              = false
+	defaultRedisServiceName           = "redis"
+	defaultMariaDBServiceName         = "mariadb"
+	defaultMariaDBDatabaseServiceName = "mariadb-database"
 )
 
 // ReadConfig reads env variables using the passed function.
 func ReadConfig(getEnv GetEnv) (*Config, error) {
 	cfg := Config{
-		Kubeconfig:         getEnv(EnvKubeconfig),
-		Username:           getEnv(EnvUsername),
-		Password:           getEnv(EnvPassword),
-		UsernameClaim:      getEnv(EnvUsernameClaim),
-		Namespace:          getEnv(EnvNamespace),
-		ListenAddr:         getEnv(EnvHTTPListenAddr),
-		JWKeyRegister:      &jwt.KeyRegister{},
-		PlanUpdateSizeRule: getEnv(EnvPlanUpdateSize),
-		PlanUpdateSLARule:  getEnv(EnvPlanUpdateSLA),
-		MetricsDomain:      getEnv(EnvMetricsDomain),
+		Kubeconfig:                 getEnv(EnvKubeconfig),
+		Username:                   getEnv(EnvUsername),
+		Password:                   getEnv(EnvPassword),
+		UsernameClaim:              getEnv(EnvUsernameClaim),
+		Namespace:                  getEnv(EnvNamespace),
+		ListenAddr:                 getEnv(EnvHTTPListenAddr),
+		JWKeyRegister:              &jwt.KeyRegister{},
+		PlanUpdateSizeRule:         getEnv(EnvPlanUpdateSize),
+		PlanUpdateSLARule:          getEnv(EnvPlanUpdateSLA),
+		MetricsDomain:              getEnv(EnvMetricsDomain),
+		RedisServiceName:           getEnv(EnvRedisServiceName),
+		MariaDBServiceName:         getEnv(EnvMariaDBServiceName),
+		MariaDBDatabaseServiceName: getEnv(EnvMariaDBDatabaseServiceName),
 	}
 
 	if cfg.PlanUpdateSLARule == "" {
@@ -172,6 +188,18 @@ func setDefaults(cfg *Config) {
 
 	if cfg.ListenAddr == "" {
 		cfg.ListenAddr = defaultHTTPListenAddr
+	}
+
+	if cfg.RedisServiceName == "" {
+		cfg.RedisServiceName = defaultRedisServiceName
+	}
+
+	if cfg.MariaDBServiceName == "" {
+		cfg.MariaDBServiceName = defaultMariaDBServiceName
+	}
+
+	if cfg.MariaDBDatabaseServiceName == "" {
+		cfg.MariaDBDatabaseServiceName = defaultMariaDBDatabaseServiceName
 	}
 }
 

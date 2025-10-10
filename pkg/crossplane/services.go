@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"code.cloudfoundry.org/lager"
+	"github.com/vshn/crossplane-service-broker/pkg/config"
 )
 
 // instanceSpecParamsPath is the path to an instance's parameters
@@ -41,12 +42,19 @@ func (s ServiceName) IsValid() bool {
 	return false
 }
 
-// Defined service names
+// Service names (values are loaded from config)
 var (
-	RedisService           ServiceName = "redis-k8s"
-	MariaDBService         ServiceName = "mariadb-k8s"
-	MariaDBDatabaseService ServiceName = "mariadb-k8s-database"
+	RedisService           ServiceName
+	MariaDBService         ServiceName
+	MariaDBDatabaseService ServiceName
 )
+
+// InitializeServiceNames sets the service names from the provided config
+func InitializeServiceNames(cfg *config.Config) {
+	RedisService = ServiceName(cfg.RedisServiceName)
+	MariaDBService = ServiceName(cfg.MariaDBServiceName)
+	MariaDBDatabaseService = ServiceName(cfg.MariaDBDatabaseServiceName)
+}
 
 // ServiceBinder is an interface for service specific implementation for binding,
 // retrieving credentials, etc.
