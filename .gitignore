@@ -1,7 +1,7 @@
 .idea
 .vscode
 /kubeconfig
-__debug_bin
+__debug_bin*
 testdata/bin/
 testdata/crds/*.yaml
 !testdata/crds/*.syn.tools.yaml
