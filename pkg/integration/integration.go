@@ -288,7 +288,16 @@ func SetupManager(t *testing.T) (*integrationtest.Manager, lager.Logger, *crossp
 
 	require.NoError(t, CreateObjects(context.Background(), []client.Object{newTestNamespace(TestNamespace)})(m.GetClient()))
 
-	brokerConfig := &config.Config{ServiceIDs: []string{"1", "2"}, Namespace: TestNamespace, UsernameClaim: "sub", EnableMetrics: true, MetricsDomain: "metrics.example.tld"}
+	brokerConfig := &config.Config{
+		ServiceIDs:                 []string{"1", "2"},
+		Namespace:                  TestNamespace,
+		UsernameClaim:              "sub",
+		EnableMetrics:              true,
+		MetricsDomain:              "metrics.example.tld",
+		RedisServiceName:           "redis-k8s",
+		MariaDBServiceName:         "mariadb-k8s",
+		MariaDBDatabaseServiceName: "mariadb-k8s-database",
+	}
 	cp, err := crossplane.New(brokerConfig, m.GetConfig())
 	if err != nil {
 		return nil, nil, nil, err

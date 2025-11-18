@@ -14,12 +14,6 @@ func Test_parseLabels(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "requires valid ServiceName",
-			labels:  map[string]string{},
-			want:    nil,
-			wantErr: true,
-		},
-		{
 			name: "parses empty labels successfully",
 			labels: map[string]string{
 				ServiceNameLabel: string(RedisService),

@@ -77,6 +77,9 @@ func New(brokerConfig *config.Config, restConfig *rest.Config) (*Crossplane, err
 		config: brokerConfig,
 	}
 
+	// Initialize service names from config
+	InitializeServiceNames(brokerConfig)
+
 	return &cp, nil
 }
 
