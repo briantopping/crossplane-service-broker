@@ -733,6 +733,7 @@ func (ts *EnvTestSuite) TestBrokerAPI_LastBindingOperation() {
 					integration.NewTestService("2", crossplane.MariaDBDatabaseService),
 					servicePlan.Composition,
 					integration.NewTestInstance("1-1-1", servicePlan, crossplane.MariaDBService, "", ""),
+					integration.NewTestSecret(integration.TestNamespace, "1-1-1", map[string]string{"cat.crt": "N/A"}),
 					dbServicePlan.Composition,
 					integration.NewTestInstance("instance-1", dbServicePlan, crossplane.MariaDBDatabaseService, "", "1-1-1"),
 					userInstance,
@@ -1088,6 +1089,7 @@ func (ts *EnvTestSuite) TestBrokerAPI_Bind() {
 					"uri":            "***",
 					"jdbcUrl":        "***",
 					"jdbcUrlMariaDb": "***",
+					"ca.crt":         "",
 					"metricsEndpoints": []string{
 						"http://1-1-1.dbaas-test-cluster.metrics.example.tld",
 						"http://1-1-1.dbaas-test-cluster.metrics.example.tld/mariadb/0",
