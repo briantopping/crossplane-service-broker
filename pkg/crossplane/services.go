@@ -44,9 +44,9 @@ func (s ServiceName) IsValid() bool {
 
 // Service names (values are loaded from config)
 var (
-	RedisService           ServiceName = "redis"
-	MariaDBService         ServiceName = "mariadb"
-	MariaDBDatabaseService ServiceName = "mariadb-database"
+	RedisService           ServiceName
+	MariaDBService         ServiceName
+	MariaDBDatabaseService ServiceName
 )
 
 // InitializeServiceNames sets the service names from the provided config
