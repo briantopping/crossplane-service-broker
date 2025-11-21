@@ -2,9 +2,11 @@ package crossplane
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"reflect"
 	"strings"
 
 	"code.cloudfoundry.org/lager"
@@ -88,4 +90,31 @@ func (msb MariadbServiceBinder) Deprovisionable(ctx context.Context) error {
 // GetBinding is not implemented.
 func (msb MariadbServiceBinder) GetBinding(_ context.Context, _ string) (Credentials, error) {
 	return nil, errNotImplemented
+}
+
+// ValidateProvisionParams doesn't currently validate anything, it will simply take the params and convert them to
+// a map.
+func (rsb *MariadbServiceBinder) ValidateProvisionParams(_ context.Context, params json.RawMessage) (map[string]interface{}, error) {
+	validatedParams := map[string]any{}
+
+	err := json.Unmarshal(params, &validatedParams)
+	if err != nil {
+		return validatedParams, fmt.Errorf("cannot unmarshal parameters: %w", err)
+	}
+
+	// SPKS's broker GUI can't handle booleans, instead it creates an array of items that were ticked.
+	// we need to parse that and convert to a boolean.
+	// If the `tls` button wasn't set, the array will be null. We rewrite the array to a
+	// boolean.
+	if validatedParams["tls"] != nil && interfaceIsSlice(validatedParams["tls"]) {
+		// we don't really care what type of elements it contains. If it
+		// contains any element at all, we assume tls should get enabled.
+		if reflect.ValueOf(validatedParams["tls"]).Len() >= 1 {
+			validatedParams["tls"] = true
+		} else {
+			validatedParams["tls"] = false
+		}
+	}
+
+	return validatedParams, nil
 }

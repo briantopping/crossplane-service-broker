@@ -1,10 +1,11 @@
 .idea
 .vscode
 /kubeconfig
-__debug_bin
+__debug_bin*
 testdata/bin/
 testdata/crds/*.yaml
 !testdata/crds/*.syn.tools.yaml
+!testdata/crds/mysql*.yaml
 node_modules/
 e2e/debug/
 crossplane-service-broker
