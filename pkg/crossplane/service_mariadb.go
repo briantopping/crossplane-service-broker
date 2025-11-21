@@ -93,7 +93,7 @@ func (msb MariadbServiceBinder) GetBinding(_ context.Context, _ string) (Credent
 }
 
 // ValidateProvisionParams doesn't currently validate anything, it will simply take the params and convert them to
-// a map. This is because there are multiple Redis implementations, one has parameters and the other doesn't.
+// a map.
 func (rsb *MariadbServiceBinder) ValidateProvisionParams(_ context.Context, params json.RawMessage) (map[string]interface{}, error) {
 	validatedParams := map[string]any{}
 
@@ -103,7 +103,7 @@ func (rsb *MariadbServiceBinder) ValidateProvisionParams(_ context.Context, para
 	}
 
 	// SPKS's broker GUI can't handle booleans, instead it creates an array of items that were ticked.
-	// we need to parse that an convert to a boolean.
+	// we need to parse that and convert to a boolean.
 	// If the `tls` button wasn't set, the array will be null. We rewrite the array to a
 	// boolean.
 	if validatedParams["tls"] != nil && interfaceIsSlice(validatedParams["tls"]) {
