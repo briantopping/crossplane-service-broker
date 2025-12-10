@@ -16,6 +16,7 @@ import (
 	integrationtest "github.com/vshn/crossplane-service-broker/pkg/integration/test/integration"
 	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
@@ -253,7 +254,9 @@ func RemoveObjects(ctx context.Context, objs []client.Object) PrePostRunFunc {
 	return func(c client.Client) error {
 		for _, obj := range objs {
 			if err := c.Delete(ctx, obj); err != nil {
-				return err
+				if !apierrors.IsNotFound(err) {
+					return err
+				}
 			}
 		}
 		return nil

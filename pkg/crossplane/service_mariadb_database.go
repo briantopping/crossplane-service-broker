@@ -20,7 +20,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/pointer"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -119,7 +118,7 @@ func (msb MariadbDatabaseServiceBinder) Unbind(ctx context.Context, bindingID st
 
 	cmp := composite.New(composite.WithGroupVersionKind(mariaDBUserGroupVersionKind))
 	cmp.SetName(bindingID)
-	return msb.cp.client.Delete(ctx, cmp, client.PropagationPolicy(metav1.DeletePropagationForeground))
+	return msb.cp.client.Delete(ctx, cmp)
 }
 
 func (msb MariadbDatabaseServiceBinder) markCredentialsForDeletion(ctx context.Context, bindingID string) error {

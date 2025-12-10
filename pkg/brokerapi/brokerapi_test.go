@@ -1809,7 +1809,6 @@ func (ts *EnvTestSuite) TestBrokerAPI_Unbind() {
 			}, userInstance)
 			if err != nil {
 				ts.Assert().True(apierrors.IsNotFound(err))
-				ts.Assert().NoError(err)
 			} else {
 				ts.Assert().NotNil(userInstance.GetDeletionTimestamp())
 			}
