@@ -249,6 +249,7 @@ func (msb MariadbDatabaseServiceBinder) createBinding(ctx context.Context, bindi
 		OwnerApiVersionLabel: mariaDBUserGroupVersionKind.Version,
 		OwnerGroupLabel:      mariaDBGroupVersionKind.Group,
 		OwnerKindLabel:       mariaDBUserGroupVersionKind.Kind,
+		OwnerCompositeLabel:  instanceID,
 	}
 
 	secret := &corev1.Secret{
