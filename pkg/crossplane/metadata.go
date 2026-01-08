@@ -51,6 +51,10 @@ const (
 	OwnerGroupLabel = AppcatBase + "/ownergroup"
 	//OwnerKindLabel stores the kind of the composite
 	OwnerKindLabel = AppcatBase + "/ownerkind"
+	// OwnerComposite stores the name of the composite
+	// This is necessary as Crossplane's own label will get removed before it triggers any
+	// deletion operation. Rendering the check useless.
+	OwnerCompositeLabel = AppcatBase + "/ownercomposite"
 )
 
 // Labels provides uniform access to parsed labels.
